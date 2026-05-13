@@ -1,33 +1,4 @@
-if (!player.completedQuests?.includes("Sunflower Start")) {
 
-    const topBanner = document.createElement("div");
-
-    topBanner.id = "questBanner";
-
-    topBanner.innerHTML =
-    "🐝 COMPLETE FIRST QUEST TO ENABLE MOD 🐝";
-
-    topBanner.style.position = "fixed";
-    topBanner.style.top = "0";
-    topBanner.style.left = "50%";
-    topBanner.style.transform = "translateX(-50%)";
-
-    topBanner.style.background =
-    "linear-gradient(90deg,#ffcc00,#ff8800)";
-
-    topBanner.style.color = "black";
-    topBanner.style.padding = "14px 30px";
-    topBanner.style.fontSize = "18px";
-    topBanner.style.fontWeight = "bold";
-
-    topBanner.style.borderBottomLeftRadius = "14px";
-    topBanner.style.borderBottomRightRadius = "14px";
-
-    topBanner.style.zIndex = "999999";
-
-    document.body.appendChild(topBanner);
-
-}
 window.mulberry32=function(a){
 
     let ret=function(){
@@ -93,152 +64,409 @@ window.dialogue_blackBear=function(player,items){
         player.updateInventory()
     }
 
-    return ["Hi, I'm Black Bear, and I'm a bear(if you couldn't tell)! I give you quests, rewards, and information about the game so you can progress!","Here's your first quest! Once you're done, come back and we'll talk!",function(){player.addQuest('Sunflower Start',[['pollenFromSunflowerField',100]],'blackBear');},"Wow! You did it! Now here's your rewards:",function(){addReward([['honey',2000000000000000],['royalJelly',100000000000],['sunflowerSeed',10000000000],['blueberry',1000000000000000],['silverEgg',10000],['gumdrops',30000],['treat',10000000000000],['pineapple',3000000000],['strawberry',100000000000],['goldEgg',100000000],['moonCharm',30000000000],['ticket',10000000000],['microConverter',10000000000],['diamondEgg',1000000000],['glue',1000000000],['magicBean',1000000000],['blueExtract',10000000000],['glitter',1000000000],['starJelly',100000000],['jellyBeans',3000000],['coconut',150000000],['redExtract',10000000],['tropicalDrink',30000000],['mythicEgg',100000000],['stinger',100000000],['oil',300000000],['enzymes',100000000]]);document.getElementById("questBanner")?.remove(); const ui = document.createElement("div");
+   return [
+    "Hi, I'm Black Bear, and I'm a bear(if you couldn't tell)! I give you quests, rewards, and information about the game so you can progress!",
+    "Here's your first quest! Once you're done, come back and we'll talk!",
+    function(){
+        player.addQuest('Sunflower Start',[['pollenFromSunflowerField',10]],'blackBear');
+    },
+    "Wow! You did it! Opening the Reward Mod Menu now...",
+    function(){
+        // 1. Define base reward matrix list
+        const rewardList = [
+            ['honey', 2000000000000000], ['royalJelly', 100000000000], ['sunflowerSeed', 10000000000],
+            ['blueberry', 1000000000000000], ['silverEgg', 10000], ['gumdrops', 30000],
+            ['treat', 10000000000000], ['pineapple', 3000000000], ['strawberry', 100000000000],
+            ['goldEgg', 100000000], ['moonCharm', 30000000000], ['ticket', 10000000000],
+            ['microConverter', 10000000000], ['diamondEgg', 1000000000], ['glue', 1000000000],
+            ['magicBean', 1000000000], ['blueExtract', 10000000000], ['glitter', 1000000000],
+            ['starJelly', 100000000], ['jellyBeans', 3000000], ['coconut', 150000000],
+            ['redExtract', 10000000], ['tropicalDrink', 30000000], ['mythicEgg', 100000000],
+            ['stinger', 100000000], ['oil', 300000000], ['enzymes', 100000000], ['swirledWax',3], ['whiteBalloon',3] ,['refreshingVial',1], ['gingerbreadBear',3], ['redBalloon',2] ,['translator',1] ,['fieldDice',1] ,['whirligig',3]
+        ];
 
-ui.innerHTML = `
-<div id="modBorder">
+        // 2. Inject global shared stylesheet styles for layout rules
+        if (!document.getElementById("beeModGlobalStyles")) {
+            const style = document.createElement("style");
+            style.id = "beeModGlobalStyles";
+            style.innerHTML = `
+            @keyframes pulse {
+                0% { box-shadow: 0 0 10px red; }
+                50% { box-shadow: 0 0 20px red; }
+                100% { box-shadow: 0 0 10px red; }
+            }
+            .item-spawn-btn {
+                background: linear-gradient(180deg, #333, #222);
+                color: #ffd84d;
+                border: 1px solid #ffcc00;
+                padding: 10px;
+                font-size: 13px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.2s;
+                text-align: center;
+            }
+            .item-spawn-btn:hover {
+                transform: scale(1.03);
+                background: linear-gradient(180deg, #ffcc00, #ffb300);
+                color: black;
+            }
+            #claimAllUI {
+                border: none;
+                padding: 12px 25px;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 12px;
+                cursor: pointer;
+                transition: 0.2s;
+                width: 100%;
+            }
+            #claimAllUI:hover {
+                transform: scale(1.05);
+            }
+            #minimizeModUI:hover {
+                background: #ffcc00;
+                color: black;
+            }
+            `;
+            document.head.appendChild(style);
+        }
 
-<h1 style="
-font-size:clamp(28px,5vw,38px);
-margin-bottom:10px;
-color:#ffd84d;
-text-shadow:0 0 15px #ffcc00;
-">
-🐝 Bee Swarm Mod Loaded
-</h1>
+        // Helper: Create or handle the bottom-corner sticky toggle widget 
+        function updateToggleBtnVisibility(show) {
+            let openBtn = document.getElementById("beeModOpenToggleBtn");
+            if (!openBtn) {
+                openBtn = document.createElement("button");
+                openBtn.id = "beeModOpenToggleBtn";
+                openBtn.innerText = "🐝 Open Menu";
+                openBtn.style.cssText = "position:fixed; bottom:20px; right:20px; z-index:999998; background:linear-gradient(180deg,#ffd84d,#ffb300); color:black; border:2px solid black; padding:10px 15px; font-weight:bold; font-family:Arial; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.5); font-size:14px;";
+                openBtn.addEventListener("click", function() {
+                    window.openMyMenu();
+                });
+                document.body.appendChild(openBtn);
+            }
+            openBtn.style.display = show ? "block" : "none";
+        }
 
-<p style="
-font-size:clamp(14px,2vw,17px);
-line-height:1.6;
-margin-bottom:20px;
-color:#e5e5e5;
-">
-Use Black Bear quests for boosted rewards.<br>
-Buy stuff from the shop to see items.
-</p>
+        // 3. Define the main window menu factory logic
+        window.openMyMenu = function() {
+            if (document.getElementById("beeModMenuContainer")) return;
 
-<div style="
-background:rgba(255,0,0,0.12);
-border:3px solid red;
-box-shadow:0 0 20px red;
-border-radius:12px;
-padding:15px;
-margin-bottom:20px;
-animation:pulse 1s infinite;
-">
+            // Hide the lower corner widget while full dash is open
+            updateToggleBtnVisibility(false);
 
-<p style="
-color:#ff4d4d;
-font-size:16px;
-font-weight:bold;
-margin:0;
-letter-spacing:1px;
-">
-⚠ WARNING ⚠
-</p>
+            const ui = document.createElement("div");
+            ui.id = "beeModMenuContainer";
+            ui.innerHTML = `
+            <div id="modDragHeader" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; cursor: move; background: #222; border-radius: 18px 18px 0 0; margin: -25px -25px 15px -25px; border-bottom: 2px solid #ffcc00; font-weight: bold; color: #ffd84d; font-size: 12px; letter-spacing: 1px; user-select: none; touch-action: none;">
+                <span style="pointer-events: none;">::: DRAG :::</span>
+                <button id="minimizeModUI" style="background: #333; border: 1px solid #ffcc00; color: #ffd84d; border-radius: 4px; cursor: pointer; font-weight: bold; padding: 2px 8px; font-size: 12px; transition: 0.2s;">—</button>
+            </div>
+            <div id="modMainBody">
+                <div id="modBorder">
+                    <h1 style="font-size:clamp(22px,3.5vw,28px); margin-bottom:5px; color:#ffd84d; text-shadow:0 0 15px #ffcc00; user-select: none;">🐝 Bee Swarm Menu</h1>
+                    <p style="font-size:13px; margin-bottom:15px; color:#e5e5e5; user-select: none;">Enter custom count, then click an item.</p>
+                    <div style="margin-bottom: 15px;">
+                        <input type="number" id="customAmountInput" placeholder="Leave empty for defaults" min="1" style="width: 100%; padding: 12px; font-size: 15px; background: #222; border: 2px solid #ffcc00; border-radius: 8px; color: white; text-align: center; outline: none; box-sizing: border-box;" />
+                    </div>
+                    <div id="rewardButtonGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 35vh; overflow-y: auto; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 10px; margin-bottom: 15px; border: 1px solid #333;"></div>
+                    <div style="background:rgba(255,0,0,0.12); border:2px solid red; box-shadow:0 0 10px red; border-radius:12px; padding:10px; margin-bottom:15px; user-select: none;">
+                        <p style="color:white; font-size:11px; margin:0; line-height:1.4;">If items don't sync, buy a shop item.<br><span style="color:#ffd84d;">Thanks to Lucas for editing this code.</span></p>
+                    </div>
+                    <div style="display: flex; justify-content: center;">
+                        <button id="claimAllUI" style="background: linear-gradient(180deg, #4CAF50, #2E7D32); color: white;">CLAIM ALL (DEFAULTS)</button>
+                    </div>
+                </div>
+            </div>
+            `;
 
-<p style="
-color:white;
-font-size:clamp(12px,1.8vw,14px);
-margin-top:10px;
-line-height:1.6;
-">
-If some items do not appear in your inventory immediately,
-buy/use items from shops or use locations to make them appear.
-Some late-game items and eggs only show when needed.<br><br>
+            // Style Assignments
+            ui.style.position = "fixed"; ui.style.top = "50%"; ui.style.left = "50%"; ui.style.transform = "translate(-50%, -50%)"; ui.style.zIndex = "999999";
+            ui.style.background = "linear-gradient(180deg,#1a1a1a,#0d0d0d)"; ui.style.color = "white"; ui.style.padding = "25px"; ui.style.borderRadius = "22px";
+            ui.style.border = "4px solid #ffcc00"; ui.style.boxShadow = "0 0 40px rgba(255,204,0,0.5)"; ui.style.textAlign = "center"; ui.style.fontFamily = "Arial, sans-serif";
+            ui.style.width = "min(520px,90vw)"; ui.style.maxHeight = "85vh"; ui.style.overflowY = "auto"; ui.style.backdropFilter = "blur(10px)";
+            document.body.appendChild(ui);
 
-<span style="color:#ffd84d;">
-Thanks to Lucas for editing this code.
-</span>
-</p>
+return [
+    "Hi, I'm Black Bear, and I'm a bear(if you couldn't tell)! I give you quests, rewards, and information about the game so you can progress!",
+    "Here's your first quest! Once you're done, come back and we'll talk!",
+    function(){
+        player.addQuest('Sunflower Start',[['pollenFromSunflowerField',100]],'blackBear');
+    },
+    "Wow! You did it! Opening the Reward Menu now...",
+    function(){
+        // 1. Define complete reward list matrix
+        const rewardList = [
+            ['honey', 2000000000000000], ['royalJelly', 100000000000], ['sunflowerSeed', 10000000000],
+            ['blueberry', 1000000000000000], ['silverEgg', 10000], ['gumdrops', 30000],
+            ['treat', 10000000000000], ['pineapple', 3000000000], ['strawberry', 100000000000],
+            ['goldEgg', 100000000], ['moonCharm', 30000000000], ['ticket', 10000000000],
+            ['microConverter', 10000000000], ['diamondEgg', 1000000000], ['glue', 1000000000],
+            ['magicBean', 1000000000], ['blueExtract', 10000000000], ['glitter', 1000000000],
+            ['starJelly', 100000000], ['jellyBeans', 3000000], ['coconut', 150000000],
+            ['redExtract', 10000000], ['tropicalDrink', 30000000], ['mythicEgg', 100000000],
+            ['stinger', 100000000], ['oil', 300000000], ['enzymes', 100000000], ['swirledWax', 300000000], 
+            ['whiteBalloon', 30000000], ['refreshingVial', 1000000000], ['gingerbreadBear', 3000000000], ['redBalloon', 200000000], 
+            ['translator', 100000000], ['fieldDice', 100000000], ['whirligig', 3000000000]
+        ];
 
-</div>
+        // Explicit structural category mapping
+        const categoryMap = {
+            silverEgg: 'vital', goldEgg: 'vital', diamondEgg: 'vital', mythicEgg: 'vital',
+            royalJelly: 'vital', starJelly: 'vital', translator: 'vital',
+            honey: 'resource', ticket: 'resource', treat: 'resource', moonCharm: 'resource', 
+            fieldDice: 'resource', microConverter: 'resource', jellyBeans: 'resource',
+            blueExtract: 'extract', redExtract: 'extract', tropicalDrink: 'extract', refreshingVial: 'extract',
+            gumdrops: 'craft', glue: 'craft', glitter: 'craft', oil: 'craft', enzymes: 'craft', 
+            swirledWax: 'craft', whirligig: 'craft', gingerbreadBear: 'craft', stinger: 'craft',
+            whiteBalloon: 'craft', redBalloon: 'craft', magicBean: 'craft', coconut: 'craft',
+            sunflowerSeed: 'craft', blueberry: 'craft', pineapple: 'craft', strawberry: 'craft'
+        };
 
-<button id="closeModUI">START</button>
+        // 2. Core transactional item distribution module
+        function addReward(itemsArray) {
+            if (!window.player || typeof player.addItem !== "function") {
+                console.error("Game engine error: 'player.addItem' function is unavailable.");
+                return;
+            }
+            itemsArray.forEach(item => {
+                const type = item[0];
+                const amount = item[1];
+                player.addItem(type, amount);
+            });
+        }
 
-</div>
-`;
+        // 3. Inject global style layout sheets
+        if (!document.getElementById("beeModGlobalStyles")) {
+            const style = document.createElement("style");
+            style.id = "beeModGlobalStyles";
+            style.innerHTML = `
+            .item-spawn-btn {
+                background: linear-gradient(180deg, #333, #222);
+                color: #ffd84d;
+                border: 1px solid #ffcc00;
+                padding: 10px;
+                font-size: 13px;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.2s;
+                text-align: center;
+            }
+            .item-spawn-btn:hover {
+                transform: scale(1.03);
+                background: linear-gradient(180deg, #ffcc00, #ffb300);
+                color: black;
+            }
+            .mod-tab-btn {
+                background: #222;
+                color: #aaa;
+                border: 1px solid #444;
+                border-bottom: none;
+                padding: 8px 12px;
+                font-size: 12px;
+                font-weight: bold;
+                cursor: pointer;
+                border-radius: 6px 6px 0 0;
+                transition: 0.2s;
+                flex: 1;
+                text-align: center;
+            }
+            .mod-tab-btn.active {
+                background: linear-gradient(180deg, #ffcc00, #ffb300);
+                color: black;
+                border-color: #ffcc00;
+            }
+            #claimAllUI {
+                border: none;
+                padding: 12px 25px;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 12px;
+                cursor: pointer;
+                transition: 0.2s;
+                width: 100%;
+            }
+            #claimAllUI:hover {
+                transform: scale(1.05);
+            }
+            #minimizeModUI:hover {
+                background: #ffcc00;
+                color: black;
+            }
+            `;
+            document.head.appendChild(style);
+        }
 
-ui.style.position = "fixed";
-ui.style.top = "50%";
-ui.style.left = "50%";
-ui.style.transform = "translate(-50%, -50%)";
-ui.style.zIndex = "999999";
+        // Floating widget toggle manager
+        function updateToggleBtnVisibility(show) {
+            let openBtn = document.getElementById("beeModOpenToggleBtn");
+            if (!openBtn) {
+                openBtn = document.createElement("button");
+                openBtn.id = "beeModOpenToggleBtn";
+                openBtn.innerText = "🐝 Open Menu";
+                openBtn.style.cssText = "position:fixed; bottom:20px; right:20px; z-index:999998; background:linear-gradient(180deg,#ffd84d,#ffb300); color:black; border:2px solid black; padding:10px 15px; font-weight:bold; font-family:Arial; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.5); font-size:14px;";
+                openBtn.addEventListener("click", function() {
+                    window.openMyMenu();
+                });
+                document.body.appendChild(openBtn);
+            }
+            openBtn.style.display = show ? "block" : "none";
+        }
 
-ui.style.background = "linear-gradient(180deg,#1a1a1a,#0d0d0d)";
-ui.style.color = "white";
+        // 4. Main menu window generation logic
+        window.openMyMenu = function() {
+            if (document.getElementById("beeModMenuContainer")) return;
 
-ui.style.padding = "30px";
-ui.style.borderRadius = "22px";
+            updateToggleBtnVisibility(false);
 
-ui.style.border = "4px solid #ffcc00";
-ui.style.boxShadow = "0 0 40px rgba(255,204,0,0.5)";
+            const ui = document.createElement("div");
+            ui.id = "beeModMenuContainer";
+            ui.innerHTML = `
+            <div id="modDragHeader" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; cursor: move; background: #222; border-radius: 18px 18px 0 0; margin: -25px -25px 15px -25px; border-bottom: 2px solid #ffcc00; font-weight: bold; color: #ffd84d; font-size: 12px; letter-spacing: 1px; user-select: none; touch-action: none;">
+                <span style="pointer-events: none;">::: DRAG HERE :::</span>
+                <button id="minimizeModUI" style="background: #333; border: 1px solid #ffcc00; color: #ffd84d; border-radius: 4px; cursor: pointer; font-weight: bold; padding: 4px 12px; font-size: 12px; transition: 0.2s;">—</button>
+            </div>
+            <div id="modMainBody">
+                <div id="modBorder">
+                    <h1 style="font-size:26px; margin-bottom:5px; color:#ffd84d; text-shadow:0 0 15px #ffcc00; user-select: none;">🐝 Bee Swarm Menu</h1>
+                    <div style="margin-bottom: 15px;">
+                        <input type="number" id="customAmountInput" placeholder="Leave empty for defaults" min="1" style="width: 100%; padding: 12px; font-size: 15px; background: #222; border: 2px solid #ffcc00; border-radius: 8px; color: white; text-align: center; outline: none; box-sizing: border-box;" />
+                    </div>
+                    <div style="display: flex; gap: 2px; margin-bottom: 0; background: transparent; padding: 0 5px;">
+                        <button class="mod-tab-btn active" data-target="vital">🥚 Eggs</button>
+                        <button class="mod-tab-btn" data-target="resource">⚡ Stats</button>
+                        <button class="mod-tab-btn" data-target="extract">🧪 Buffs</button>
+                        <button class="mod-tab-btn" data-target="craft">🔨 Items</button>
+                    </div>
+                    <div id="rewardButtonGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 35vh; overflow-y: auto; padding: 12px; background: rgba(0,0,0,0.4); border-radius: 0 0 10px 10px; margin-bottom: 15px; border: 1px solid #333; border-top: 2px solid #ffcc00;"></div>
+                    <div style="background:rgba(255,0,0,0.12); border:2px solid red; box-shadow:0 0 10px red; border-radius:12px; padding:10px; margin-bottom:15px; user-select: none;">
+                        <p style="color:white; font-size:11px; margin:0; line-height:1.4;">If items don't sync, buy a shop item.<br><span style="color:#ffd84d;">Thanks to Lucas for editing this code.</span></p>
+                    </div>
+                    <div style="display: flex; justify-content: center;">
+                        <button id="claimAllUI" style="background: linear-gradient(180deg, #4CAF50, #2E7D32); color: white;">CLAIM ALL (DEFAULTS)</button>
+                    </div>
+                </div>
+            </div>
+            `;
 
-ui.style.textAlign = "center";
-ui.style.fontFamily = "Arial, sans-serif";
+            ui.style.position = "fixed"; ui.style.top = "50%"; ui.style.left = "50%"; ui.style.transform = "translate(-50%, -50%)"; ui.style.zIndex = "999999";
+            ui.style.background = "linear-gradient(180deg,#1a1a1a,#0d0d0d)"; ui.style.color = "white"; ui.style.padding = "25px"; ui.style.borderRadius = "22px";
+            ui.style.border = "4px solid #ffcc00"; ui.style.boxShadow = "0 0 40px rgba(255,204,0,0.5)"; ui.style.textAlign = "center"; ui.style.fontFamily = "Arial, sans-serif";
+            ui.style.width = "min(520px,90vw)"; ui.style.maxHeight = "85vh"; ui.style.overflowY = "auto"; ui.style.backdropFilter = "blur(10px)";
+            document.body.appendChild(ui);
 
-ui.style.width = "min(520px,90vw)";
-ui.style.maxHeight = "85vh";
-ui.style.overflowY = "auto";
+            const grid = ui.querySelector("#rewardButtonGrid");
+            const inputField = ui.querySelector("#customAmountInput");
+            let currentTab = "vital";
 
-ui.style.backdropFilter = "blur(10px)";
+            // Categorized item rendering engine
+            function renderGrid() {
+                grid.innerHTML = "";
+                rewardList.forEach(reward => {
+                    const itemName = reward[0];
+                    const defaultAmount = reward[1];
+                    const itemCat = categoryMap[itemName] || 'craft';
 
-const style = document.createElement("style");
+                    if (itemCat !== currentTab) return;
 
-style.innerHTML = `
-@keyframes pulse {
-    0% { box-shadow: 0 0 10px red; }
-    50% { box-shadow: 0 0 30px red; }
-    100% { box-shadow: 0 0 10px red; }
-}
+                    const btn = document.createElement("button"); 
+                    btn.className = "item-spawn-btn"; 
+                    btn.innerText = itemName;
+                    
+                    btn.addEventListener("click", function() {
+                        const inputValue = inputField.value.trim();
+                        const finalAmount = inputValue !== "" ? parseInt(inputValue, 10) : defaultAmount;
+                        if (!isNaN(finalAmount) && finalAmount > 0) {
+                            addReward([[itemName, finalAmount]]);
+                        }
+                    });
+                    grid.appendChild(btn);
+                });
+            }
 
-#closeModUI{
-    background:linear-gradient(180deg,#ffd84d,#ffb300);
-    border:none;
-    padding:14px 40px;
-    font-size:18px;
-    font-weight:bold;
-    border-radius:12px;
-    cursor:pointer;
-    transition:0.2s;
-    box-shadow:0 0 20px rgba(255,200,0,0.5);
+            // Tab interface selection listeners
+            ui.querySelectorAll(".mod-tab-btn").forEach(tabBtn => {
+                tabBtn.addEventListener("click", function() {
+                    ui.querySelectorAll(".mod-tab-btn").forEach(b => b.classList.remove("active"));
+                    this.classList.add("active");
+                    currentTab = this.getAttribute("data-target");
+                    renderGrid();
+                });
+            });
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+            // Initial view setup
+            renderGrid();
 
-    width:100%;
-    max-width:220px;
-    margin:0 auto;
+            // --- CROSS-PLATFORM INTERACTION ENGINE (PC & iPad) ---
+            const dragHeader = ui.querySelector("#modDragHeader");
+            let isDragging = false; 
+            let startX = 0, startY = 0, initialLeft = 0, initialTop = 0;
+            
+            function dragStart(clientX, clientY) {
+                isDragging = true; 
+                const rect = ui.getBoundingClientRect(); 
+                ui.style.transform = "none";
+                ui.style.left = rect.left + "px"; 
+                ui.style.top = rect.top + "px";
+                startX = clientX; 
+                startY = clientY; 
+                initialLeft = rect.left; 
+                initialTop = rect.top;
+            }
+            
+            function dragMove(clientX, clientY) {
+                if (!isDragging) return;
+                ui.style.left = (initialLeft + (clientX - startX)) + "px";
+                ui.style.top = (initialTop + (clientY - startY)) + "px";
+            }
 
-    color:black;
-    text-align:center;
-}
+            function dragEnd() {
+                isDragging = false;
+            }
+            
+            // Standard PC Mouse Bindings
+            dragHeader.addEventListener("mousedown", (e) => { 
+                if (e.target.id !== "minimizeModUI") { 
+                    dragStart(e.clientX, e.clientY); 
+                    e.preventDefault(); 
+                } 
+            });
+            document.addEventListener("mousemove", (e) => dragMove(e.clientX, e.clientY));
+            document.addEventListener("mouseup", dragEnd);
+            
+            // Mobile & iPad Touch Bindings
+            dragHeader.addEventListener("touchstart", (e) => { 
+                if (e.target.id !== "minimizeModUI" && e.touches.length > 0) { 
+                    const touch = e.touches[0];
+                    dragStart(touch.clientX, touch.clientY); 
+                } 
+            }, { passive: true });
+            
+            document.addEventListener("touchmove", (e) => { 
+                if (isDragging && e.touches.length > 0) { 
+                    const touch = e.touches[0];
+                    dragMove(touch.clientX, touch.clientY); 
+                    if (e.cancelable) e.preventDefault(); // Stop entire page from drifting on mobile viewports
+                } 
+            }, { passive: false });
+            
+            document.addEventListener("touchend", dragEnd);
 
-#closeModUI:hover{
-    transform:scale(1.05);
-    box-shadow:0 0 30px rgba(255,200,0,0.9);
-}
+            // Interface controller hooks
+            const minBtn = ui.querySelector("#minimizeModUI");
+            minBtn.addEventListener("click", function() { 
+                ui.remove(); 
+                updateToggleBtnVisibility(true); 
+            });
 
-#closeModUI:active{
-    transform:scale(0.98);
-}
+            document.getElementById("claimAllUI").addEventListener("click", () => addReward(rewardList));
+        };
 
-@media (max-width: 600px){
-
-    #modBorder{
-        width:100%;
+        window.openMyMenu();
     }
-
-    #closeModUI{
-        font-size:16px;
-        padding:12px 25px;
-    }
-}
-`;
-
-document.head.appendChild(style);
-document.body.appendChild(ui);
+];
 
 document.getElementById("closeModUI").onclick = () => ui.remove();
 },"With your brand-new honey, go buy a basic egg from the shop near the dandelion field over there!","Hatch it to get more bees and increase your honey making!","Here's your next quest:",function(){player.addQuest('Dandelion Deed',[['pollenFromDandelionField',200]],'blackBear');},"Great! Now here's more honey and a Royal Jelly! Use the jelly on a basic bee to transform it into a better type of bee!",function(){addReward([['honey',250000000000000]])},"Here's another quest:",function(){player.addQuest('Pollen Fetcher',[['pollen',500]],'blackBear');},"Cool! Here's a lot more honey:",function(){addReward([['honey',4000000000000000]])},"It's time to upgrade your tools! Go into the green shop over there, and buy a new collector or backpack! After you do that, complete this quest:",function(){player.addQuest('Red Request',[['redPollen',500]],'blackBear');},"Cool! Try buying more bee eggs using honey when you can afford them!",function(){addReward([['honey',800],['royalJelly',1],['sunflowerSeed',10000000000]])},"Why not try exploring and talking to other bears while completing this quest?",function(){player.addQuest('Hiding in the Blue',[['bluePollen',900]],'blackBear');},"Awesome! Here's more Royal Jelly and honey!",function(){addReward([['honey',900],['royalJelly',1],['blueberry',1000000000000000]])},"Remember, keep getting more bees and using Royal Jelly on them. Try to not use Royal Jelly on the transformed bees, and make your basic bees better first!","If you have more than 5 bees already, try going into the 5 bee zone! It has many more flowers, but beware of the monsters! Anyways, here's a new quest:",function(){player.addQuest('Variety Fetcher',[['bluePollen',1000],['redPollen',1000],['whitePollen',1000]],'blackBear');},"Nice! Here's your first special reward, a Silver Egg!",function(){addReward([['honey',1150],['silverEgg',10000],['gumdrops',30000]])},"You're done with the beginner quests! Now, you can complete questlines to recieve special rewards!","This is the start of the Gold Egg questlines! After 3 more quests, you will recieve a new type of egg, hatching improved bees! Ready for more?",function(){player.addQuest('Bamboo Boogie',[['pollenFromBambooField',2500]],'blackBear');},"Great! Many of the special bees have better stats and abilities! They can boost you pollen collection by large amounts.","Here are your rewards:",function(){addReward([['honey',1250],['royalJelly',1],['treat',1]])},"You have 2 more quest to complete before earning the Gold Egg! Here's the next quest:",function(){player.addQuest('Cobweb Sweeper',[['pollenFromSpiderField',3250]],'blackBear');},"Great job! Keep unlocking more gear and bees!",function(){addReward([['honey',2000],['sunflowerSeed',3],['pineapple',3]])},"Many fields have different colors of flowers, and those give different pollen types. Bees perform better in their own color's field!","Try collecting more red pollen:",function(){player.addQuest('Red Request 2',[['redPollen',4000]],'blackBear');},"Epic! It's good to have a nice with different types of bees to better collect pollen from all the fields!",function(){addReward([['honey',2500],['strawberry',1]])},"There are many rarities of bees, like: common, rare, epic, legendary, and mythic! Legendary and mythic bees are some of the rarest, and only good beekeepers like me own them.","Anyways, it's your last quest until the prized Gold Egg! Get to work!",function(){player.addQuest('Red + Blue = Gold',[['redPollen',6000],['bluePollen',6000]],'blackBear');},"Wow! Not a lot of players are able to get their hands on the Gold Egg, but you're special! Hatch it for an epic bee!",function(){addReward([['honey',4000],['goldEgg',1],['royalJelly',1]])},"It's the start of a new questline: The Diamond Egg!","Remember the special legendary bees I showed you? Hatch one with the Diamond Egg! Complete 7 more quests to discover a new legendary bee!",function(){player.addQuest('Lucky Landscaping',[['pollenFromCloverField',10000]],'blackBear');},"Good job! Here's a lot of honey!",function(){addReward([['honey',7500],['moonCharm',3]])},"While progressing through the game, make sure to keep upgrading your tools and hive!","If you haven't, hatch 10 bees to explore the 10 bee zone. Discover new fields and shops around the map!","Also, remember to complete other bear's quests, too. They may give even better rewards than mine!",function(){player.addQuest('Pineapple Picking',[['pollenFromPineapplePatch',15000]],'blackBear');},"Cool! Keep expanding and improving your hive and gear for more honey!",function(){addReward([['honey',10000],['royalJelly',1],['ticket',1]])},"5 more quests to go until the Diamond Egg! Here's the next one:",function(){player.addQuest('Azure Adventure',[['bluePollen',17500]],'blackBear');},"Good! From now on, the quests will ramp up in difficulty, but the rewards will be worth it!",function(){addReward([['honey',15000],['blueExtract',1]])},'4 more quests until the Diamond Egg!',function(){player.addQuest('Blue Mushrooms',[['pollenFromBlueFlowerField',20000],['pollenFromMushroomField',20000]],'blackBear');},"Great! Was that hard? 3 more quests to the Diamond Egg!",function(){addReward([['honey',30000],['treat',5]])},"Have you been progressing through the game? If so, you should have at least 15 bees by now!","As you get more bees, the fields you get access to have better flowers and give more pollen. But beware! In those fields live dangerous monsters!",function(){player.addQuest('The 15 Bee Zone',[['pollenFromCactusField',25000],['pollenFromPumpkinPatch',25000],['pollenFromPineTreeForest',25000],['pollenFromRoseField',25000]],'blackBear');},"Good job! Those scary monsters stand no chance!",function(){addReward([['honey',50000],['royalJelly',1],['stinger',1]])},"Just 2 more quests until the legendary Diamond Egg!",function(){player.addQuest('Collecting Cliffside',[['pollenFromStrawberryField',40000],['pollenFromSpiderField',40000],['pollenFromBambooField',40000]],'blackBear');},"Noice! Here is some more honey to help you prepare for the next quest!",function(){addReward([['honey',100000],['microConverter',1],['gumdrops',3]])},"Ready for the Diamond Egg? Collect 75,000 pollen of all colors!",function(){player.addQuest('Quest of Legends',[['redPollen',75000],['bluePollen',75000],['whitePollen',75000]],'blackBear');},"Wow! I didn't think you'll make it this far! You are one of the best players in this game!","Here's the legendary Diamond Egg I promised:",function(){addReward([['honey',250000],['diamondEgg',1],['treat',100],['ticket',3]])},"Have you ever heard of gifted bees? They are special versions of bees with better stats!","Having a gifted bee in your hive also applies a special 'Gifted Hive Bonus' that gives you buffs!","They don't stack with multiple gifted bees, but some are very good! It's good to have many different types of gifted bees in your hive.","Now's your chance to earn a gifted bee! If you didn't get lucky and get one, you can transform one with a Star Jelly!","Complete the next 6 quests for my Star Jelly!",function(){player.addQuest('Pink Pineapples',[['redPollen',100000],['pollenFromPineapplePatch',100000]],'blackBear');},"Good! Now the rewards and quests requirements go much higher!",function(){addReward([['honey',300000],['enzymes',1]])},"Ready? 5 more quests until your Star Jelly!",function(){player.addQuest('White As Snow',[['whitePollen',1000000],['pollenFromPumpkinPatch',400000],['pollenFromPineapplePatch',300000],['pollenFromSpiderField',200000],['pollenFromDandelionField',100000]],'blackBear');},"Nice job!",function(){addReward([['honey',500000],['royalJelly',1],['glue',1],['magicBean',1]])},"How many bees do you have now? Get 25 bees to unlock the 25 bee zone!","4 more quests for the Star Jelly!",function(){player.addQuest('Blinding Sunlight',[['pollenFromMountainTopField',700000],['pollenFromCloverField',400000],['pollenFromSunflowerField',300000]],'blackBear');},"Awesome! The mountain top field gives so much more pollen and has bigger flowers!",function(){addReward([['honey',750000],['oil',1],['treat',50]])},"If you've been in the stump field, you've probably seen the Stump Snail boss!","While your bees try to defeat it, collect 100,000 pollen!",function(){player.addQuest('Solo Stump',[['pollenFromStumpField',200000]],'blackBear');},"Cool! Was it hard to collect pollen without your bee's help?",function(){addReward([['honey',900000],['stinger',1],['ticket',1],['jellyBeans',1]])},"As you progress through the game, make sure to use your resources wisely and craft better gear.","2 more quests until I give you my Star Jelly!!!",function(){player.addQuest('Blissfully Blue',[['bluePollen',1250000],['pollenFromPineTreeForest',700000],['pollenFromBambooField',450000],['pollenFromBlueFlowerField',200000]],'blackBear');},"Nice! Here are extra rewards for the last quest in the Star Jelly questlines.",function(){addReward([['honey',1000000],['blueExtract',1],['glitter',1],['royalJelly',1],['blueberry',50],['magicBean',1]])},
