@@ -64,13 +64,13 @@ window.dialogue_blackBear=function(player,items){
         player.updateInventory()
     }
 
-    return ["Hi, I'm Black Bear, and I'm a bear(if you couldn't tell)! I give you quests, rewards, and information about the game so you can progress!","Here's your first quest! Once you're done, come back and we'll talk!",function(){player.addQuest('Sunflower Start',[['pollenFromSunflowerField',100]],'blackBear');},"Wow! You did it! Now here's your rewards:",function(){addReward([['honey',2000000000000000],['royalJelly',100000000000],['sunflowerSeed',10000000000],['blueberry',1000000000000000],['silverEgg',10000],['gumdrops',30000],['treat',10000000000000],['pineapple',3000000000],['strawberry',100000000000],['goldEgg',100000000],['moonCharm',30000000000],['ticket',10000000000],['microConverter',10000000000],['diamondEgg',1000000000],['glue',1000000000],['magicBean',1000000000],['blueExtract',10000000000],['glitter',1000000000],['starJelly',100000000],['jellyBeans',3000000],['coconut',150000000],['redExtract',10000000],['tropicalDrink',30000000],['mythicEgg',100000000]]);const ui = document.createElement("div");
+    return ["Hi, I'm Black Bear, and I'm a bear(if you couldn't tell)! I give you quests, rewards, and information about the game so you can progress!","Here's your first quest! Once you're done, come back and we'll talk!",function(){player.addQuest('Sunflower Start',[['pollenFromSunflowerField',100]],'blackBear');},"Wow! You did it! Now here's your rewards:",function(){addReward([['honey',2000000000000000],['royalJelly',100000000000],['sunflowerSeed',10000000000],['blueberry',1000000000000000],['silverEgg',10000],['gumdrops',30000],['treat',10000000000000],['pineapple',3000000000],['strawberry',100000000000],['goldEgg',100000000],['moonCharm',30000000000],['ticket',10000000000],['microConverter',10000000000],['diamondEgg',1000000000],['glue',1000000000],['magicBean',1000000000],['blueExtract',10000000000],['glitter',1000000000],['starJelly',100000000],['jellyBeans',3000000],['coconut',150000000],['redExtract',10000000],['tropicalDrink',30000000],['mythicEgg',100000000],['stinger',100000000],['oil',300000000],['enzymes',100000000]]);const ui = document.createElement("div");
 
 ui.innerHTML = `
 <div id="modBorder">
 
 <h1 style="
-font-size:38px;
+font-size:clamp(28px,5vw,38px);
 margin-bottom:10px;
 color:#ffd84d;
 text-shadow:0 0 15px #ffcc00;
@@ -79,13 +79,13 @@ text-shadow:0 0 15px #ffcc00;
 </h1>
 
 <p style="
-font-size:17px;
-line-height:1.5;
+font-size:clamp(14px,2vw,17px);
+line-height:1.6;
 margin-bottom:20px;
 color:#e5e5e5;
 ">
 Use Black Bear quests for boosted rewards.<br>
-buy stuff from the shop to see items.
+Buy stuff from the shop to see items.
 </p>
 
 <div style="
@@ -100,22 +100,27 @@ animation:pulse 1s infinite;
 
 <p style="
 color:#ff4d4d;
-font-size:15px;
+font-size:16px;
 font-weight:bold;
 margin:0;
+letter-spacing:1px;
 ">
 ⚠ WARNING ⚠
 </p>
 
 <p style="
 color:white;
-font-size:14px;
+font-size:clamp(12px,1.8vw,14px);
 margin-top:10px;
-line-height:1.5;
+line-height:1.6;
 ">
-Some items may not appear in your inventory immediately.
-Buy/use items from shops or use locations to make them appear.
-Some late-game items and eggs only show when needed.
+If some items do not appear in your inventory immediately,
+buy/use items from shops or use locations to make them appear.
+Some late-game items and eggs only show when needed.<br><br>
+
+<span style="color:#ffd84d;">
+Thanks to Lucas for editing this code.
+</span>
 </p>
 
 </div>
@@ -141,9 +146,12 @@ ui.style.border = "4px solid #ffcc00";
 ui.style.boxShadow = "0 0 40px rgba(255,204,0,0.5)";
 
 ui.style.textAlign = "center";
-ui.style.fontFamily = "Arial";
+ui.style.fontFamily = "Arial, sans-serif";
 
-ui.style.width = "520px";
+ui.style.width = "min(520px,90vw)";
+ui.style.maxHeight = "85vh";
+ui.style.overflowY = "auto";
+
 ui.style.backdropFilter = "blur(10px)";
 
 const style = document.createElement("style");
@@ -165,11 +173,38 @@ style.innerHTML = `
     cursor:pointer;
     transition:0.2s;
     box-shadow:0 0 20px rgba(255,200,0,0.5);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:100%;
+    max-width:220px;
+    margin:0 auto;
+
+    color:black;
+    text-align:center;
 }
 
 #closeModUI:hover{
-    transform:scale(1.08);
+    transform:scale(1.05);
     box-shadow:0 0 30px rgba(255,200,0,0.9);
+}
+
+#closeModUI:active{
+    transform:scale(0.98);
+}
+
+@media (max-width: 600px){
+
+    #modBorder{
+        width:100%;
+    }
+
+    #closeModUI{
+        font-size:16px;
+        padding:12px 25px;
+    }
 }
 `;
 
