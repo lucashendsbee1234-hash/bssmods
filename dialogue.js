@@ -67,34 +67,113 @@ window.dialogue_blackBear=function(player,items){
     return ["Hi, I'm Black Bear, and I'm a bear(if you couldn't tell)! I give you quests, rewards, and information about the game so you can progress!","Here's your first quest! Once you're done, come back and we'll talk!",function(){player.addQuest('Sunflower Start',[['pollenFromSunflowerField',100]],'blackBear');},"Wow! You did it! Now here's your rewards:",function(){addReward([['honey',2000000000000000],['royalJelly',100000000000],['sunflowerSeed',10000000000],['blueberry',1000000000000000],['silverEgg',10000],['gumdrops',30000],['treat',10000000000000],['pineapple',3000000000],['strawberry',100000000000],['goldEgg',100000000],['moonCharm',30000000000],['ticket',10000000000],['microConverter',10000000000],['diamondEgg',1000000000],['glue',1000000000],['magicBean',1000000000],['blueExtract',10000000000],['glitter',1000000000],['starJelly',100000000],['jellyBeans',3000000],['coconut',150000000],['redExtract',10000000],['tropicalDrink',30000000],['mythicEgg',100000000]]);const ui = document.createElement("div");
 
 ui.innerHTML = `
-<h1>Bee Swarm Mod Loaded</h1>
+<div id="modBorder">
 
-<p>
-Use Black Bear quests for boosted rewards.
+<h1 style="
+font-size:38px;
+margin-bottom:10px;
+color:#ffd84d;
+text-shadow:0 0 15px #ffcc00;
+">
+🐝 Bee Swarm Mod Loaded
+</h1>
+
+<p style="
+font-size:17px;
+line-height:1.5;
+margin-bottom:20px;
+color:#e5e5e5;
+">
+Use Black Bear quests for boosted rewards.<br>
 Complete the second quest for items and more.
 </p>
 
-<p style="color:#ffcc00; font-size:14px; margin-top:15px;">
-⚠ Warning: some items may not show up in your inv. go to the shop and buy stuff, also some eggs and later on items wont show up until you need to use them so find where you need to use them and it will work.
+<div style="
+background:rgba(255,0,0,0.12);
+border:3px solid red;
+box-shadow:0 0 20px red;
+border-radius:12px;
+padding:15px;
+margin-bottom:20px;
+animation:pulse 1s infinite;
+">
+
+<p style="
+color:#ff4d4d;
+font-size:15px;
+font-weight:bold;
+margin:0;
+">
+⚠ WARNING ⚠
 </p>
 
-<button id="closeModUI">Close</button>
+<p style="
+color:white;
+font-size:14px;
+margin-top:10px;
+line-height:1.5;
+">
+Some items may not appear in your inventory immediately.
+Buy/use items from shops or use locations to make them appear.
+Some late-game items and eggs only show when needed.
+</p>
+
+</div>
+
+<button id="closeModUI">START</button>
+
+</div>
 `;
 
 ui.style.position = "fixed";
 ui.style.top = "50%";
 ui.style.left = "50%";
 ui.style.transform = "translate(-50%, -50%)";
-
-ui.style.background = "#1e1e1e";
-ui.style.color = "white";
-ui.style.padding = "25px";
-ui.style.borderRadius = "15px";
 ui.style.zIndex = "999999";
+
+ui.style.background = "linear-gradient(180deg,#1a1a1a,#0d0d0d)";
+ui.style.color = "white";
+
+ui.style.padding = "30px";
+ui.style.borderRadius = "22px";
+
+ui.style.border = "4px solid #ffcc00";
+ui.style.boxShadow = "0 0 40px rgba(255,204,0,0.5)";
 
 ui.style.textAlign = "center";
 ui.style.fontFamily = "Arial";
 
+ui.style.width = "520px";
+ui.style.backdropFilter = "blur(10px)";
+
+const style = document.createElement("style");
+
+style.innerHTML = `
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px red; }
+    50% { box-shadow: 0 0 30px red; }
+    100% { box-shadow: 0 0 10px red; }
+}
+
+#closeModUI{
+    background:linear-gradient(180deg,#ffd84d,#ffb300);
+    border:none;
+    padding:14px 40px;
+    font-size:18px;
+    font-weight:bold;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.2s;
+    box-shadow:0 0 20px rgba(255,200,0,0.5);
+}
+
+#closeModUI:hover{
+    transform:scale(1.08);
+    box-shadow:0 0 30px rgba(255,200,0,0.9);
+}
+`;
+
+document.head.appendChild(style);
 document.body.appendChild(ui);
 
 document.getElementById("closeModUI").onclick = () => ui.remove();
