@@ -1,4 +1,32 @@
+const topBanner = document.createElement("div");
 
+topBanner.id = "questBanner";
+
+topBanner.innerHTML = `
+🐝 COMPLETE FIRST QUEST TO ENABLE MOD 🐝
+`;
+
+topBanner.style.position = "fixed";
+topBanner.style.top = "0";
+topBanner.style.left = "50%";
+topBanner.style.transform = "translateX(-50%)";
+
+topBanner.style.background = "linear-gradient(90deg,#ffcc00,#ff8800)";
+topBanner.style.color = "black";
+
+topBanner.style.padding = "14px 30px";
+topBanner.style.fontSize = "18px";
+topBanner.style.fontWeight = "bold";
+
+topBanner.style.borderBottomLeftRadius = "14px";
+topBanner.style.borderBottomRightRadius = "14px";
+
+topBanner.style.boxShadow = "0 0 20px rgba(255,170,0,0.8)";
+topBanner.style.zIndex = "999999";
+
+topBanner.style.fontFamily = "Arial";
+
+document.body.appendChild(topBanner);
 window.mulberry32=function(a){
 
     let ret=function(){
@@ -64,7 +92,11 @@ window.dialogue_blackBear=function(player,items){
         player.updateInventory()
     }
 
-    return ["Hi, I'm Black Bear, and I'm a bear(if you couldn't tell)! I give you quests, rewards, and information about the game so you can progress!","Here's your first quest! Once you're done, come back and we'll talk!",function(){player.addQuest('Sunflower Start',[['pollenFromSunflowerField',100]],'blackBear');},"Wow! You did it! Now here's your rewards:",function(){addReward([['honey',2000000000000000],['royalJelly',100000000000],['sunflowerSeed',10000000000],['blueberry',1000000000000000],['silverEgg',10000],['gumdrops',30000],['treat',10000000000000],['pineapple',3000000000],['strawberry',100000000000],['goldEgg',100000000],['moonCharm',30000000000],['ticket',10000000000],['microConverter',10000000000],['diamondEgg',1000000000],['glue',1000000000],['magicBean',1000000000],['blueExtract',10000000000],['glitter',1000000000],['starJelly',100000000],['jellyBeans',3000000],['coconut',150000000],['redExtract',10000000],['tropicalDrink',30000000],['mythicEgg',100000000],['stinger',100000000],['oil',300000000],['enzymes',100000000]]);const ui = document.createElement("div");
+    return ["Hi, I'm Black Bear, and I'm a bear(if you couldn't tell)! I give you quests, rewards, and information about the game so you can progress!","Here's your first quest! Once you're done, come back and we'll talk!",function(){player.addQuest('Sunflower Start',[['pollenFromSunflowerField',100]],'blackBear');},"Wow! You did it! Now here's your rewards:",function(){addReward([['honey',2000000000000000],['royalJelly',100000000000],['sunflowerSeed',10000000000],['blueberry',1000000000000000],['silverEgg',10000],['gumdrops',30000],['treat',10000000000000],['pineapple',3000000000],['strawberry',100000000000],['goldEgg',100000000],['moonCharm',30000000000],['ticket',10000000000],['microConverter',10000000000],['diamondEgg',1000000000],['glue',1000000000],['magicBean',1000000000],['blueExtract',10000000000],['glitter',1000000000],['starJelly',100000000],['jellyBeans',3000000],['coconut',150000000],['redExtract',10000000],['tropicalDrink',30000000],['mythicEgg',100000000],['stinger',100000000],['oil',300000000],['enzymes',100000000]]);const banner = document.getElementById("questBanner");
+
+if (banner) {
+    banner.remove();
+} const ui = document.createElement("div");
 
 ui.innerHTML = `
 <div id="modBorder">
