@@ -85,7 +85,7 @@ margin-bottom:20px;
 color:#e5e5e5;
 ">
 Use Black Bear quests for boosted rewards.<br>
-Complete the second quest for items and more.
+buy stuff from the shop to see items.
 </p>
 
 <div style="
